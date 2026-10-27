@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novella | Romance Library & Reading Sanctuary</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #161214;
+            --card-bg: #211a1e;
+            --text-color: #f3e9ec;
+            --accent-romantic: #c94b68;
+            --accent-glow: rgba(201, 75, 104, 0.3);
+            --border-color: #3b2c34;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        .light-theme {
+            --bg-color: #fcf6f8;
+            --card-bg: #ffffff;
+            --text-color: #382b30;
+            --accent-romantic: #b83b5e;
+            --accent-glow: rgba(184, 59, 94, 0.15);
+            --border-color: #e6d5dc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-romantic);
+            letter-spacing: 3px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent-romantic);
+        }
+
+        .btn-secondary, .btn-primary, .btn-like {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover, .btn-primary:hover {
+            border-color: var(--accent-romantic);
+            color: var(--accent-romantic);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-romantic);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #a8304d;
+            color: #fff;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2.5rem 5%;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active-view {
+            display: block;
+            animation: fadeInView 0.4s ease forwards;
+        }
+
+        @keyframes fadeInView {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .hero-section p {
+            color: #a38c95;
+            font-size: 1.05rem;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 320px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-romantic);
+            box-shadow: 0 10px 25px var(--accent-glow);
+        }
+
+        .book-spine {
+            width: 35px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
+            border-right: 1px solid var(--border-color);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-align: center;
+            padding: 10px 0;
+            color: var(--accent-romantic);
+            font-weight: 600;
+        }
+
+        .book-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .genre-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-romantic);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-title {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .book-author {
+            font-size: 0.85rem;
+            color: #9c858e;
+            font-style: italic;
+        }
+
+        /* Story Reader View Styles */
+        .story-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reader-nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .book-cover-fold {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform-origin: left;
+            transition: transform 0.8s ease, opacity 0.6s ease;
+        }
+
+        .book-cover-fold.open-animation {
+            transform: rotateY(-90deg);
+            opacity: 0;
+        }
+
+        .cover-genre {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-romantic);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .cover-title {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .cover-author {
+            font-size: 1.1rem;
+            color: #9c858e;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .story-content-panel {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .story-content-panel.fade-in {
+            display: block;
+            opacity: 1;
+        }
+
+        .story-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .story-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .story-meta {
+            font-size: 0.9rem;
+            color: #9c858e;
+            font-style: italic;
+        }
+
+        .synopsis-toggle-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-image-wrapper {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .story-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #fff;
+            padding: 1rem;
+            font-size: 0.85rem;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .story-body {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            line-height: 1.9;
+            color: var(--text-color);
+            margin-bottom: 3rem;
+        }
+
+        .drop-cap::first-letter {
+            font-family: var(--font-heading);
+            font-size: 3.8rem;
+            float: left;
+            line-height: 1;
+            padding-right: 12px;
+            color: var(--accent-romantic);
+            font-weight: 700;
+        }
+
+        .story-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            margin-bottom: 4rem;
+        }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: color 0.2s;
+        }
+
+        .like-section:hover {
+            color: var(--accent-romantic);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: #9c858e;
+            font-size: 0.85rem;
+            background-color: var(--card-bg);
+        }
+
+        @media(max-width: 768px) {
+            .hero-section h1 { font-size: 2.2rem; }
+            .cover-title { font-size: 2.4rem; }
+            .story-body { font-size: 1.1rem; }
+            .nav-links { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="switchView('library')">NOVELLA</div>
+            <ul class="nav-links">
+                <li><a onclick="switchView('library')" class="active">Library</a></li>
+                <li><button id="theme-toggle" class="btn-secondary">☀️ Mode</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- LIBRARY VIEW -->
+        <section id="library-view" class="view-section active-view">
+            <div class="hero-section">
+                <h1>Romance Reading Sanctuary</h1>
+                <p>Explore 30 enchanting tales of passion, destiny, and timeless love.</p>
+            </div>
+            <div class="book-grid" id="bookGrid">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- STORY READER VIEW -->
+        <section id="story-view" class="view-section">
+            <div class="story-container">
+                <div class="reader-nav-bar">
+                    <button class="btn-secondary" onclick="switchView('library')">← Back to Library</button>
+                    <button id="toggleSynopsis" class="btn-secondary">Show Synopsis</button>
+                </div>
+
+                <!-- Book Cover Animation Fold -->
+                <div id="bookCoverFold" class="book-cover-fold">
+                    <div id="coverGenre" class="cover-genre">Contemporary</div>
+                    <h1 id="coverTitle" class="cover-title">Midnight Waltz</h1>
+                    <div id="coverAuthor" class="cover-author">By Elena Vance</div>
+                    <button id="startReadBtn" class="btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">Open Book & Read</button>
+                </div>
+
+                <!-- Actual Story Content Panel -->
+                <div id="storyContentPanel" class="story-content-panel">
+                    <div class="story-header">
+                        <h2 id="storyTitleHeading">Chapter 1: Midnight Waltz</h2>
+                        <div class="story-meta">
+                            By <span id="storyAuthor">Elena Vance</span> • <span id="storyGenre">Contemporary</span>
+                        </div>
+                    </div>
+
+                    <div id="synopsisBox" class="synopsis-toggle-box" style="display: none;">
+                        <p id="synopsisText"><strong>Synopsis:</strong> Amidst glittering ballroom chandeliers...</p>
+                    </div>
+
+                    <div class="story-image-wrapper">
+                        <img id="storyImage" src="" alt="Story Scene">
+                        <div id="storyImageCaption" class="image-caption">The Grand Ballroom at midnight.</div>
+                    </div>
+
+                    <div id="storyBodyContent" class="story-body">
+                        <!-- Story paragraphs injected here -->
+                    </div>
+
+                    <div class="story-actions">
+                        <button class="btn-secondary" onclick="switchView('library')">← Return to Library</button>
+                        <div id="likeBtn" class="like-section">
+                            ❤️ Like this Story (<span id="likeCount">142</span>)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Novella Romance Sanctuary. Crafted with passion for readers everywhere.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const romanceDatabase = [
+            { id: 1, title: "Midnight Waltz", author: "Elena Vance", genre: "Contemporary", synopsis: "Amidst glittering ballroom chandeliers and whispered secrets, two estranged souls find themselves locked in a breathless dance that rewrites their past.", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80", caption: "The Grand Ballroom at midnight.", content: "The crystal chandeliers of the Grand Marigold estate cast long, trembling shadows across the polished mahogany floor. Outside, rain tapped a steady, melancholic rhythm against the stained-glass windows, but inside, the air hummed with the electric tension of high society.<br><br>Julian stood by the balcony archway, his dark gaze cutting through the crowd. He hadn't expected to see her here tonight—not after five long years of separation and silence. Then, the music shifted. A gentle violin melody filled the hall, and there she was, moving with effortless grace, catching the candlelight as if kissed by starlight.<br><br>As she turned her head, her eyes locked instantly onto his across the room. The noise of the gala melted away, leaving nothing behind except the weight of unspoken words and a heartbeat echoing in sync with the waltz." },
+            { id: 2, title: "Whispers in the Rain", author: "Julian Cross", genre: "Historical", synopsis: "Trapped under a secluded countryside awning during a thunderstorm, an uptight aristocrat and a free-spirited painter discover unexpected common ground.", image: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=800&q=80", caption: "Shelter from the summer storm.", content: "The downpour came without warning, turning the cobbled pathways of Verona into rushing streams. Catherine dashed under the stone portico of the abandoned pavilion, breathless and laughing, only to find she wasn't alone.<br><br>Lord Nicholas stood in the shadows, holding a damp leather sketchbook. He frowned slightly, unused to intruders in his sanctuary. Yet as the thunder rolled across the valley, breaking down their guarded walls, simple silence turned into deep conversation about art, dreams, and the burdens they both carried." },
+            { id: 3, title: "The Stolen Letter", author: "Clara Sterling", genre: "Regency", synopsis: "A dangerous game of wits between a witty debutante and a stern duke leads to a passionate romance neither saw coming.", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80", caption: "Ink and hidden confessions.", content: "The letter contained secrets that could ruin her family's reputation, and Lord Ashworth held it firmly in his gloved hand. Beatrice glared at him across the candlelit desk, her pulse racing with defiance rather than fear.<br><br>'You think you hold all the cards, Your Grace,' she whispered, stepping closer. A slow smile touched the edges of his mouth. In that single, breathtaking moment, the blackmail dissolved into a magnetic pull that neither etiquette nor pride could withstand." },
+            { id: 4, title: "Beneath Neon Skies", author: "Damian Wright", genre: "Urban", synopsis: "Two night-shift workers find solace in each other's company above the sparkling skyline of Tokyo.", image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80", caption: "Rooftop views over the metropolis.", content: "The neon sign of the noodle shop buzzed a soft crimson against the damp concrete. Maya leaned against the rooftop railing, holding two steaming cups of coffee. Across the ledge, Kenji offered a tired, genuine smile.<br><br>Working the graveyard shift in a city of millions often felt isolating, but ever since their paths crossed on this exact roof three weeks ago, the city felt a little warmer, a little brighter, and infinitely more romantic." },
+            { id: 5, title: "A Symphony of Hearts", author: "Sophie Laurent", genre: "Musical", synopsis: "A brilliant cellist and an arrogant composer clash on stage, only to create the most gorgeous melody of love.", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80", caption: "Harmonies born from passion.", content: "The bow scraped sharply against the string, signaling another frustrating disagreement in the rehearsal hall. Gabriel rubbed his temples, while Clara stood her ground, her cello resting gracefully against her knee.<br><br>'You're playing it with technical precision, Gabriel, but with zero soul,' she challenged. Stunned by her candor, he stepped down from the podium, walked right up to her, and whispered, 'Then show me how it's supposed to feel.'" },
+            { id: 6, title: "Eternally Bound", author: "Marcus Thorne", genre: "Fantasy", synopsis: "An immortal protector breaks his sacred vow to save the mortal woman who captured his cold heart.", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80", caption: "A bond transcending time and realms.", content: "For centuries, Lyra had been just another mortal generation passing through the sanctuary gates. But when Rowan looked into her eyes during the blood moon ritual, his ancient heart skipped a beat for the first time in millennia.<br><br>He knew the elders would condemn their union, but as danger closed in from the dark woods, Rowan swore an oath far stronger than magic: he would protect her, even if it meant defying the gods." },
+            { id: 7, title: "The Italian Summer", author: "Giulia Rossi", genre: "Destination", synopsis: "Sun-drenched vineyards and citrus groves set the stage for an unforgettable romance in the heart of Tuscany.", image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=800&q=80", caption: "Golden hour in the Tuscan hills.", content: "The scent of rosemary and ripe grapes hung heavily in the warm afternoon breeze. Matteo poured two glasses of Chianti, handing one across the rustic wooden table to Elena, who was visiting from London.<br><br>She had come to Italy looking for architectural inspiration, but as Matteo laughed under the golden Tuscan sun, she realized the masterpiece she had truly found was sitting right across from her." },
+            { id: 8, title: "Chasing Starlight", author: "Liam Hayes", genre: "YA Romance", synopsis: "Two high school stargazers build an observatory in secret and find out their feelings run deeper than the cosmos.", image: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80", caption: "Counting constellations together.", content: "Through the cracked lens of the salvaged telescope, Saturn's rings looked crystal clear. Chloe gasped, stepping back to let Liam take a look.<br><br>Instead of looking through the scope, Liam looked straight at her illuminated face under the starry night sky. 'You know,' he murmured softly, 'the most breathtaking view in this entire universe has been right here beside me all along.'" },
+            { id: 9, title: "Coffee & Confessions", author: "Nora Blake", genre: "Rom-Com", synopsis: "A barista constantly misspells a regular customer's name on purpose, sparking a playful war of witty notes.", image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80", caption: "Morning brews and playful sparks.", content: "Jonah picked up his takeaway cup and stared at the marker scrawl: *'Yohn - Destroyer of Espresso'*. He rolled his eyes with a grin and pulled out his pen to write back on his napkin.<br><br>When he slid it across the counter, Maya looked down to read: *'To the Barista Who Can't Spell: Dinner tonight at 8 so I can teach you the alphabet?'*. She blushed furiously as the entire café erupted into quiet cheers." },
+            { id: 10, title: "The Duke’s Secret", author: "Arthur Pendelton", genre: "Historical", synopsis: "A masked masquerade ball uncovers long-hidden affections between childhood friends.", image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80", caption: "Masquerade under glittering chandeliers.", content: "The golden silver mask hid his identity, but she would recognize those broad shoulders anywhere. Julian pulled her gently behind a heavy velvet drape away from the prying eyes of the ballroom.<br><br>'You shouldn't be hiding out here, Your Grace,' she teased softly. He reached up, untying her silk mask with trembling fingers. 'I stopped hiding the moment I found you, Victoria.'" },
+            { id: 11, title: "Ocean Breeze Promises", author: "Chloe Martin", genre: "Sweet Romance", synopsis: "A lighthouse keeper finds healing and love when a stranded sailor washes ashore during a gale.", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80", caption: "Waves crashing against rocky shores.", content: "The wooden floorboards of the coastal cottage creaked as Caleb handed her a steaming mug of tea. Outside, the ocean waves crashed relentlessly against the jagged cliffs of Maine.<br><br>Grace looked down at her bandaged palm, then up into Caleb's steady, ocean-blue eyes. In a place as isolated as the lighthouse, words weren't always necessary—their presence said everything that needed to be said." },
+            { id: 12, title: "Scars of Velvet", author: "V. C. Blackwood", genre: "Dark Romance", synopsis: "An underground syndicate leader finds his formidable armor completely dismantled by a fearless rival.", image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", caption: "Shadows, secrets, and dangerous allure.", content: "The blade rested lightly against his collarbone, but Christian didn't even flinch. He simply looked up at Elena, a dangerous, appreciative smirk playing on his lips.<br><br>'You've got nerve coming into my domain alone,' he rasped. Elena pressed the cold steel closer, her voice steady. 'I'm not here to start a war, Christian. I'm here to finish it—or join you in it.'" },
+            { id: 13, title: "Letters to Paris", author: "Amelie Dupond", genre: "Epistolary", synopsis: "Decades-old love letters found in an antique desk spark a cross-continental modern romance.", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80", caption: "Cobblestone streets of the romantic capital.", content: "The faded ink on the parchment dated back to May 1944. Lucas read the poignant words aloud in his Parisian apartment, completely captivated by the poetic soul of the writer.<br><br>Inspired, he slipped a handwritten reply into the secret compartment of the antique desk, mailing it to the estate's current owner in New York—unaware that a reply would arrive across the Atlantic just three days later." },
+            { id: 14, title: "Rhythm of Our Souls", author: "Zack Taylor", genre: "Music", synopsis: "An acoustic street musician and an indie lyricist share a guitar and a spark in downtown London.", image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80", caption: "Melodies echoing down brick alleys.", content: "The guitar strings vibrated under his calloused fingers as the evening chill settled over Covent Garden. Harper hummed a soft harmony to accompany his chords, her voice echoing sweetly off the brick walls.<br><br>Passersby dropped coins into the open instrument case, but neither musician noticed. Their focus was locked entirely on one another, weaving a brand new chorus right there on the sidewalk." },
+            { id: 15, title: "Winter Solstice Vows", author: "H. P. Thorne", genre: "Holiday", synopsis: "Snowed in inside a cozy mountain cabin, two long-time rivals finally give into holiday magic.", image: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?auto=format&fit=crop&w=800&q=80", caption: "Warm fires against the winter snow.", content: "The blizzard howled outside, burying the cabin door in four feet of powdery white snow. Inside, the crackling fireplace was the only source of warmth and amber light.<br><br>Noah tossed another log onto the flames and handed a cup of hot cocoa to Clara. Sitting shoulder-to-shoulder on the woolen rug, the bitter rivalry that had lasted all autumn melted away under the gentle glow of holiday magic." },
+            { id: 16, title: "Beyond the Horizon", author: "Rowan Cole", genre: "Adventure", synopsis: "Two marine biologists chart uncharted tropical waters and discover uncharted depths in their own relationship.", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80", caption: "Endless azure ocean horizons.", content: "The research vessel bobbed gently on the turquoise swells of the Pacific. Leo adjusted his diving mask while Maya checked the sonar monitors.<br><br>As they plunged into the crystal-clear depths together to tag reef sharks, Leo grabbed her hand mid-dive, pointing toward a breathtaking coral ridge. Floating side-by-side in the blue expanse, words were unnecessary to express the depth of their bond." },
+            { id: 17, title: "The Painted Smile", author: "Evelyn Reed", genre: "Drama", synopsis: "A brilliant portrait artist falls in love with her enigmatic and melancholic muse.", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80", caption: "Canvases filled with raw emotion.", content: "The strokes of charcoal swept across the textured paper with fierce intensity. Evelyn studied the lines of Sebastian's face—the subtle sorrow lingering in his dark eyes.<br><br>'Why do you always look so guarded when you sit for me?' she asked softly, putting her brush down. Sebastian looked up, a raw vulnerability crossing his features. 'Because you're painting right through my armor, Evelyn.'" },
+            { id: 18, title: "A Crown of Thorns", author: "Kaelen Voss", genre: "Royal", synopsis: "An exiled prince and a rebel fighter form an uneasy alliance that blossoms into forbidden passion.", image: "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?auto=format&fit=crop&w=800&q=80", caption: "Thrones, crowns, and fierce loyalty.", content: "The fortress walls were crumbling under siege, but inside the war room, the atmosphere was charged with an entirely different kind of electricity. Alistair leaned over the tactical map.<br><br>Lyra slammed her hand on the wooden table, disagreeing with his plan. Instead of reacting with royal anger, Alistair stepped in close, his voice dropping to a low, breathless murmur. 'You test my patience, rebel... and yet, you captivate me.'" },
+            { id: 19, title: "Second Chance Lane", author: "Grace Kincaid", genre: "Small Town", synopsis: "High school sweethearts reunite ten years later at their hometown bakery.", image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=800&q=80", caption: "Small town bakeries and sweet reunions.", content: "The bell above the bakery door jingled cheerfully as Ethan stepped inside out of the autumn chill. Behind the flour-dusted counter stood Sarah, frozen in place with a wooden spatula in her hand.<br><br>Ten years had passed since they last spoke on graduation night. Yet as Sarah looked into Ethan's familiar hazel eyes across the pastry display, it felt like not a single day had gone by." },
+            { id: 20, title: "Stolen Glances", author: "Miles O'Connor", genre: "Slow Burn", synopsis: "Working late in a corporate skyscraper office turns into a quiet masterclass in slow-burn romance.", image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80", caption: "Late nights in skyscraper offices.", content: "The digital clock on the computer monitor flashed 2:14 AM. The entire floor of the architectural firm was pitch dark except for the lamp glowing over Clara's desk.<br><br>Marcus walked over with two cups of black coffee, placing one gently beside her keyboard. As their fingers brushed against the ceramic mug, an electric spark lingered in the quiet office air, making them both forget all about the blueprints." },
+            { id: 21, title: "Moonlight Serenade", author: "Audrey Hepburn-Cox", genre: "Classical", synopsis: "A pianist and a violinist share an empty conservatory stage under the full moon.", image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80", caption: "Moonlit classical melodies.", content: "The grand piano keys sang under Julian's fingertips, echoing through the silent, vaulted halls of the conservatory. Clara walked down the aisle, her violin case tucked under her arm.<br><br>Without a single word spoken, she lifted her bow and joined his rhythm. The moonlight poured through the tall arched windows, wrapping the two musicians in a passionate serenade meant for no one else in the world." },
+            { id: 22, title: "The Alchemist's Heart", author: "S. E. Corvus", genre: "Fantasy", synopsis: "An apothecary experiment goes delightfully wrong, fusing two magical destinies together.", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80", caption: "Potions, magic, and mystery.", content: "Purple smoke billowed across the workshop bench as the glass flask bubbled over. Kian coughed, waving the lavender fumes away, only to find Talia standing right beside him with soot on her nose.<br><br>Instead of disaster, the potion had emitted a brilliant golden glow that wrapped around their wrists like a magical thread. They stared at each other in stunned silence as their heartbeats echoed in unison." },
+            { id: 23, title: "Velvet Shadows", author: "Gideon Graves", genre: "Suspense", synopsis: "An investigator and an art thief team up to recover a stolen diamond while dodging international authorities.", image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", caption: "Heists and hidden alliances.", content: "The security alarm shrieked in the distance as Gideon pulled Nina behind the marble statue pillar. The hallway was pitch black except for the amber emergency lights flashing overhead.<br><br>Breathing heavily, Nina pressed against his chest to stay hidden from the patrol guards. Gideon wrapped his arm securely around her waist, whispering with a smirk against her hair, 'Next time, you're the one distracting the guard.'" },
+            { id: 24, title: "Sunset over Santorini", author: "Dimitri K.", genre: "Travel", synopsis: "White-washed cliffside balconies and breathtaking Mediterranean sunsets spark a romance of a lifetime.", image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80", caption: "Blue domes and golden sunsets.", content: "The sky burned in vibrant shades of amber and magenta over the caldera of Santorini. Nicole leaned against the white stucco railing, holding a glass of local Assyrtiko wine.<br><br>Dimitri stepped up beside her, pointing toward the horizon where the sun dipped into the Aegean Sea. 'They say if you make a wish while the sun touches the water here, it comes true,' he murmured, his eyes fixed entirely on her." },
+            { id: 25, title: "An Imperfect Match", author: "Hannah Abbott", genre: "Enemies to Lovers", synopsis: "Two competing wedding planners are forced to collaborate on the biggest society wedding of the year.", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80", caption: "Wedding florals and sharp banter.", content: "The seating chart was a complete disaster, and so was their professional rivalry. Oliver crossed his arms, glaring at Chloe across the table stacked with rose centerpieces.<br><br>'If you place the bride's difficult aunt at table four, there will be a diplomatic incident,' Chloe warned. Oliver smirked, stepping closer. 'Then it's a good thing we make such an unstoppable team when we stop arguing long enough to agree.'" },
+            { id: 26, title: "The Sapphire Ring", author: "Lord Alistair", genre: "Victorian", synopsis: "A priceless heirloom ring binds two Victorian nobles in an arranged engagement that turns into genuine love.", image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80", caption: "Victorian elegance and royal rings.", content: "The heavy velvet box snapped open to reveal a magnificent deep-blue sapphire surrounded by diamonds. Arthur slid the heirloom ring onto Lady Evelyn's trembling finger.<br><br>Their marriage was arranged by their estates for political convenience, but as Arthur lifted her hand to his lips and pressed a tender kiss to her knuckles, Evelyn knew her heart had already been claimed." },
+            { id: 27, title: "Paper Hearts & Ink", author: "Maya Lin", genre: "College", synopsis: "University library study sessions turn into late-night whispered confessions and budding romance.", image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80", caption: "College libraries and late-night study sessions.", content: "The stacks of the university library were dead quiet at midnight. Liam pushed his thick textbooks aside and slid a sticky note across the mahogany table toward Maya.<br><br>She unfolded it with a curious smile. Scrawled in messy handwriting were the words: *'If you ace this macroeconomics exam with me, will you let me take you out for pancakes?'* She looked up to see him biting his lip nervously, and nodded with a bright grin." },
+            { id: 28, title: "Echoes of Yesterday", author: "Logan Reed", genre: "Time Slip", synopsis: "An antique pocket watch transports a historian back to 1920s jazz-age Paris and into an impossible romance.", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80", caption: "Jazz music and roaring twenties romance.", content: "The ticking of the antique silver pocket watch grew deafeningly loud. When Claire opened her eyes, the neon streetlamps of modern Paris had vanished, replaced by vintage roadsters and jazz music spilling from a glowing cabaret.<br><br>A handsome man in a tailored tuxedo stepped out from the doorway, offering her his hand. 'You're just in time for the first dance, mademoiselle,' he smiled warmly." },
+            { id: 29, title: "Guard My Heart", author: "Jaxson Steel", genre: "Bodyguard", synopsis: "A stoic private protection agent falls for the high-profile art curator he was hired to keep safe.", image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", caption: "Protection, duty, and deep affection.", content: "The gallery opening was packed with glittering guests, but Ethan's eyes never left the perimeter, nor did they stray far from Chloe's silhouette.<br><br>When the lights flickered during a staged power outage, Ethan pulled her instantly behind a marble pillar, shielding her body with his own. Chloe looked up into his intense, protective eyes in the dark, her heart pounding far faster from his closeness than from the danger outside." },
+            { id: 30, title: "Forever Yours, Lily", author: "Oliver Queen", genre: "Tragic", synopsis: "Seas apart by war, two star-crossed lovers keep their promise through weekly letters that bridge oceans.", image: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=800&q=80", caption: "Letters across oceans and wartime memories.", content: "The envelope smelled faintly of salt and pine. Lily clutched the crisp parchment against her chest as she stood on the wooden dock, watching the mail steamship pull away into the Atlantic fog.<br><br>Inside was his final promise before the armistice: *'Wait for me by the lighthouse, my love. I am coming home.'* With tears in her eyes and a hopeful smile, she whispered into the wind, 'I'll wait forever.'" }
+        ];
+
+        // Populate Library Book Cards
+        const bookGrid = document.getElementById('bookGrid');
+        if (bookGrid) {
+            romanceDatabase.forEach(book => {
+                const card = document.createElement('article');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <div class="book-spine">ROMANCE</div>
+                    <div class="book-content">
+                        <span class="genre-tag">${book.genre}</span>
+                        <h2 class="book-title">${book.title}</h2>
+                        <p class="book-author">${book.author}</p>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    openStory(book.id);
+                });
+                bookGrid.appendChild(card);
+            });
+        }
+
+        // Switch View Logic
+        function switchView(viewName) {
+            const libView = document.getElementById('library-view');
+            const storyView = document.getElementById('story-view');
+            const coverFold = document.getElementById('bookCoverFold');
+            const contentPanel = document.getElementById('storyContentPanel');
+
+            if (viewName === 'library') {
+                storyView.classList.remove('active-view');
+                libView.classList.add('active-view');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (viewName === 'story') {
+                libView.classList.remove('active-view');
+                storyView.classList.add('active-view');
+                coverFold.style.display = 'block';
+                coverFold.classList.remove('open-animation');
+                contentPanel.style.display = 'none';
+                contentPanel.classList.remove('fade-in');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Open specific story data
+        function openStory(id) {
+            const currentBook = romanceDatabase.find(b => b.id === id) || romanceDatabase[0];
+            
+            document.getElementById('coverTitle').textContent = currentBook.title;
+            document.getElementById('coverAuthor').textContent = 'By ' + currentBook.author;
+            document.getElementById('coverGenre').textContent = currentBook.genre;
+            
+            document.getElementById('storyTitleHeading').textContent = 'Chapter 1: ' + currentBook.title;
+            document.getElementById('storyAuthor').textContent = currentBook.author;
+            document.getElementById('storyGenre').textContent = currentBook.genre;
+            document.getElementById('synopsisText').innerHTML = `<strong>Synopsis:</strong> ${currentBook.synopsis}`;
+            document.getElementById('storyBodyContent').innerHTML = `<p class="drop-cap">${currentBook.content}</p>`;
+            
+            document.getElementById('storyImage').src = currentBook.image;
+            document.getElementById('storyImageCaption').textContent = currentBook.caption;
+
+            switchView('story');
+        }
+
+        // Book Opening Transition Trigger on Story View
+        const startReadBtn = document.getElementById('startReadBtn');
+        const bookCoverFold = document.getElementById('bookCoverFold');
+        const storyContentPanel = document.getElementById('storyContentPanel');
+
+        if (startReadBtn) {
+            startReadBtn.addEventListener('click', () => {
+                bookCoverFold.classList.add('open-animation');
+                setTimeout(() => {
+                    bookCoverFold.style.display = 'none';
+                    storyContentPanel.style.display = 'block';
+                    storyContentPanel.classList.add('fade-in');
+                }, 600);
+            });
+        }
+
+        // Toggle Synopsis
+        const toggleSynopsisBtn = document.getElementById('toggleSynopsis');
+        const synopsisBox = document.getElementById('synopsisBox');
+        if (toggleSynopsisBtn) {
+            toggleSynopsisBtn.addEventListener('click', () => {
+                if (synopsisBox.style.display === 'none') {
+                    synopsisBox.style.display = 'block';
+                    toggleSynopsisBtn.textContent = 'Hide Synopsis';
+                } else {
+                    synopsisBox.style.display = 'none';
+                    toggleSynopsisBtn.textContent = 'Show Synopsis';
+                }
+            });
+        }
+
+        // Like Button Counter
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCount = document.getElementById('likeCount');
+        let liked = false;
+        if (likeBtn) {
+            likeBtn.addEventListener('click', () => {
+                let count = parseInt(likeCount.textContent);
+                if (!liked) {
+                    count++;
+                    likeBtn.style.color = '#ff6b81';
+                    liked = true;
+                } else {
+                    count--;
+                    likeBtn.style.color = 'inherit';
+                    liked = false;
+                }
+                likeCount.textContent = count;
+            });
+        }
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                themeToggle.textContent = document.body.classList.contains('light-theme') ? '🌙 Mode' : '☀️ Mode';
+            });
+        }
+    </script>
+</body>
+</html>
